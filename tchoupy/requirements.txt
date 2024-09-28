@@ -1,0 +1,6 @@
+fractions
+functools
+numpy
+regex
+scipy
+warnings

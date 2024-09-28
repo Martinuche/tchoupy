@@ -1,0 +1,34 @@
+# pyproject.toml
+
+[build-system]
+requires      = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tchoupy"
+description = "Time-saving tool for unit conversions and dimensional quantity computations"
+readme = {file = "README.md", content-type = "text/markdown"}
+authors = [{name = "Martin Teuscher", email = "teuscher.edu@gmail.com"}]
+license = {file = "LICENSE"}
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+keywords = ["units", "unit conversion", "conversion systems", "physics", "dimensional quantities"]
+dependencies = [
+    "numpy >= 1.21.5",
+    "regex >= 2.5.135",
+    "scipy >= 1.10.1",
+]
+requires-python = ">= 3.8"
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/Martinuche/tchoupy"
+
+[tool.setuptools.dynamic]
+version = {attr = "tchoupy.__version__"}

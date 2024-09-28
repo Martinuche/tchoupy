@@ -1,0 +1,98 @@
+Guiding lines for the future :
+
+###### The path to hell is paved with premature optimization ######
+
+###
+In case a recap about the code is needed :
+https://stackoverflow.com/questions/100003/what-are-metaclasses-in-python
+
+###
+It could help to directly subclass the dict class, instead of overrriding
+__getitem__ and __setitem__. However there are MANY PITFALLS !
+https://realpython.com/inherit-python-dict/
+https://stackoverflow.com/questions/43627405/understanding-getitem-method-in-python
+
+###
+Remove the fraction module to significantly improve efficiency. It shouldn't
+be too hard, the array of dimensions shall be replaced by a 2xN array with
+first line being numerators and second lines being denominators.
+
+###
+Code the __add__ method for it to work with float + qty, when qty object has
+dimension 0. It is useless for qty-qty.
+
+###
+What is the best rational approximation for p*x/q when x is a float and p,q are
+integers: Frac(p*x/q) or  p*Frac(x)/q ?
+# I believe the 2nd one, hence self.dim*frac is computed like this in the 
+__pow__ method.
+
+###
+Use __slots__ to improve efficiency
+https://www.datacamp.com/tutorial/write-memory-efficient-classes-in-python
+
+###
+At the moment, when entering a value for a dimensional quantity, this value
+must be float. It would sure be useful if it could accept a numpy array as an
+input (easy mode), or even if the instance itself would be a numpy array object
+by subclassing numpy ndarray (hard mode).
+
+In fact, if __getattr__ was not overriden in the qty module (functionality 
+present for syntactic sugar : x.m1s_1, x.lightspeed etc all work), the easy 
+mode works as fine : value can be entered as a numpy array, and operations are 
+induced correctly (even though the dtype is object). However, if the
+functionality is turned on, it fails because __getattr__ is called with weird
+arguments like __array_struct__, or __abstractmethods__ (I think the 2nd one can
+be called even without numpy). Why ? Can I make it compatible with numpy 
+arrays ? Another option would be to have two ways to call the module, either
+"numpy compatible" or "syntactic sugar for arguments".
+https://stackoverflow.com/questions/2350072/custom-data-types-in-numpy-arrays
+https://stackoverflow.com/questions/15454285/numpy-array-of-class-instances
+
+###
+Improve syntactic sugar: being able to write HEP.m3(6) instead of HEP(3,'m3').
+This probably requires to remove the existing __getitem__method, because HEP.m3
+links to HEP['m3']. Wait actually it doesn't. Yet HEP.__dict__ contains 'm3'.
+
+###
+Give more documentation on units: being able to ask SI['siemens']? and get a
+docstring about the siemens unit would be great.
+
+###
+There is no reason to keep the current syntax for system creation with this
+weird pair of unit vs list. The use of keyword arguments is much easier and
+practical to understand while completing the same task. One of code PEP is : 
+"if your code is too hard to explain, you shouldn't change the comments, you 
+should change the code."
+
+###
+Adding a few extra units to a builtin conversion system is now feasible. Another option
+available for the user should be to merge two builtins systems.
+
+###
+Builtins conversion systems to create:
+- metric vs imperial system
+- astrophysical units, use astropy.units
+- temperatures : this would need to modify how the convertor works, because it
+does not allow for OFFSETS betwen units (as in fahrenheit = 9/5*celsius + 32)
+- CGS (easy with SI + change fundamental unit)
+- computer science : pxls, cm, 1024x768 etc
+
+###
+Make a proper copy method when modifying a builtin dict
+
+###
+Something easy and fun : 
+the database is now suitable only for the HEP dict. Create a .load method available
+in any System (HEP.load, SI.load etc that would load all the quantities in the database
+in the correct conversion system. Aka if you dou HEP.load(database.py), hairwidth
+is of type HEP, but if you do SI.load(database.py) it's of type SI. Also allow
+to get just a part of the database (mywidth = SI.load(database.py, 'hairwidth')),
+but this time you chose the name of the variable.
+
+###
+- Return something that is user-readable when asking for the dimension of an object,
+not the crappy list of array (as this list of array is internally needed though,
+just create two different .dims arguments: .user_readable_dims and .intern_dims)
+- In addition to the .dims, a .compatible_units that returns units in which
+the quantity can be expressed

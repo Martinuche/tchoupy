@@ -1,0 +1,4 @@
+# MANIFEST.in
+
+include tchoupy/requirements.txt
+include tchoupy/future_updates.txt
